@@ -1,11 +1,14 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-
+[assembly: InternalsVisibleTo("Geekiam.Rss.Tests")]
 namespace Geekiam.Rss;
 
 public class FeedService : IFeedService
 {
     private readonly HttpClient _client;
+    
+    
 
     public FeedService(HttpClient client)
     {
@@ -18,25 +21,22 @@ public class FeedService : IFeedService
         var response = await _client.GetAsync(url, cancellationToken);
         if (!response.IsSuccessStatusCode) throw new Exception();
 
-        var pageContent = await response.Content.ReadAsStringAsync(cancellationToken);
-        return  ParseFeedUrlsFromHtml(pageContent);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        return  ParseFeedUrlsFromHtml(System.Net.WebUtility.HtmlDecode(content));
     }
-    
-   
-    
-    public IEnumerable<FeedLink> ParseFeedUrlsFromHtml(string htmlContent)
+
+
+    private IEnumerable<FeedLink> ParseFeedUrlsFromHtml(string htmlContent)
     {
-        // sample link:
-        // <link rel="alternate" type="application/rss+xml" title="Microsoft Bot Framework Blog" href="http://blog.botframework.com/feed.xml">
-        // <link rel="alternate" type="application/atom+xml" title="Aktuelle News von heise online" href="https://www.heise.de/newsticker/heise-atom.xml">
+      
 
-        Regex rex = new Regex("<link[^>]*rel=\"alternate\"[^>]*>", RegexOptions.Singleline);
+        var rex = new Regex("<link[^>]*rel=\"alternate\"[^>]*>", RegexOptions.Singleline);
 
-        List<FeedLink> result = new List<FeedLink>();
+        var result = new List<FeedLink>();
 
         foreach (Match m in rex.Matches(htmlContent))
         {
-            var hfl = GetLinks(m.Value);
+            var hfl = ExtractLink(m.Value);
             if (hfl != null)
                 result.Add(hfl);
         }
@@ -44,23 +44,18 @@ public class FeedService : IFeedService
         return result.AsEnumerable();
     }
 
-    internal  FeedLink GetLinks(string content)
+    internal FeedLink ExtractLink(string content)
     {
-        string linkTag = System.Net.WebUtility.HtmlDecode(content);
-        string type = GetAttributeFromLinkTag("type", linkTag).ToLower();
+       var type = AttributeFromTag("type", content).ToLower();
 
         if (!type.Contains("application/rss") && !type.Contains("application/atom"))
             return null;
 
-        FeedLink hfl = new FeedLink();
-        string title = GetAttributeFromLinkTag("title", linkTag);
-        string href = GetAttributeFromLinkTag("href", linkTag);
-        hfl.Title = title;
-        hfl.Url = href;
-        hfl.Type = type.Contains("rss") ? FeedType.Rss : FeedType.Atom;
-        return hfl;
+       
+        return new FeedLink( AttributeFromTag("title", content),AttributeFromTag("href", content) , type.Contains("rss") ? FeedType.Rss : FeedType.Atom);
     }
-    private static string GetAttributeFromLinkTag(string attribute, string htmlTag)
+
+    private string AttributeFromTag(string attribute, string htmlTag)
     {
         var res = Regex.Match(htmlTag, attribute + "\\s*=\\s*\"(?<val>[^\"]*)\"", RegexOptions.IgnoreCase & RegexOptions.IgnorePatternWhitespace);
 

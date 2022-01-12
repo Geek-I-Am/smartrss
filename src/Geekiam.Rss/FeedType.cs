@@ -10,22 +10,22 @@ public enum FeedType
     /// <summary>
     /// Rss 0.91 feed
     /// </summary>
-    Rss_0_91,
+    Rss091,
 
     /// <summary>
     /// Rss 0.92 feed
     /// </summary>
-    Rss_0_92,
+    Rss092,
 
     /// <summary>
     /// Rss 1.0 feed
     /// </summary>
-    Rss_1_0,
+    Rss10,
 
     /// <summary>
     /// Rss 2.0 feed
     /// </summary>
-    Rss_2_0,
+    Rss20,
 
     /// <summary>
     /// Media Rss feed
@@ -34,7 +34,7 @@ public enum FeedType
 
 
     /// <summary>
-    /// Rss feed - is used for <see cref="HtmlFeedLink"/> type
+    /// Rss feed - is used for <see cref="FeedLink"/> type
     /// </summary>
     Rss,
 
