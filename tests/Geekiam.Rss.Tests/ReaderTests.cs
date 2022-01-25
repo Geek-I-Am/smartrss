@@ -8,7 +8,7 @@ public class ReaderTests
     [Theory]
     [InlineData("garywoodfine.com", "http://garywoodfine.com:80/")]
     [InlineData("https://garywoodfine.com", "https://garywoodfine.com:443/")]
-    public void ShouldReturnAbsoluteUrl(string url, string expected)
+    public void Should_Return_AbsoluteUrl(string url, string expected)
     {
       
       

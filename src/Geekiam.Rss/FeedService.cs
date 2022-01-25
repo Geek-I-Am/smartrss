@@ -16,7 +16,7 @@ public class FeedService : IFeedService
     }
 
 
-    public async Task<IEnumerable<FeedLink>> Get(string url, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Feed>> Get(string url, CancellationToken cancellationToken)
     {
         var response = await _client.GetAsync(url, cancellationToken);
         if (!response.IsSuccessStatusCode) throw new Exception();
@@ -26,13 +26,13 @@ public class FeedService : IFeedService
     }
 
 
-    private IEnumerable<FeedLink> ParseFeedUrlsFromHtml(string htmlContent)
+    private IEnumerable<Feed> ParseFeedUrlsFromHtml(string htmlContent)
     {
       
 
         var rex = new Regex("<link[^>]*rel=\"alternate\"[^>]*>", RegexOptions.Singleline);
 
-        var result = new List<FeedLink>();
+        var result = new List<Feed>();
 
         foreach (Match m in rex.Matches(htmlContent))
         {
@@ -44,7 +44,7 @@ public class FeedService : IFeedService
         return result.AsEnumerable();
     }
 
-    internal FeedLink ExtractLink(string content)
+    internal Feed ExtractLink(string content)
     {
        var type = AttributeFromTag("type", content).ToLower();
 
@@ -52,7 +52,7 @@ public class FeedService : IFeedService
             return null;
 
        
-        return new FeedLink( AttributeFromTag("title", content),AttributeFromTag("href", content) , type.Contains("rss") ? FeedType.Rss : FeedType.Atom);
+        return new Feed( AttributeFromTag("title", content),AttributeFromTag("href", content) , type.Contains("rss") ? FeedType.Rss : FeedType.Atom);
     }
 
     private string AttributeFromTag(string attribute, string htmlTag)

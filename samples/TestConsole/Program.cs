@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Headers;
-using Geekiam.Rss;
+﻿using Geekiam.Rss;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +27,7 @@ class Program
                 {
                     client.DefaultRequestHeaders.Add(GeekiamFeed.ACCEPT_HEADER_NAME, GeekiamFeed.ACCEPT_HEADER_VALUE);
                     client.DefaultRequestHeaders.Add(GeekiamFeed.USER_AGENT_NAME, GeekiamFeed.USER_AGENT_VALUE);
+                    client.DefaultRequestHeaders.Add(GeekiamFeed.REFERER_HEADER_NAME, GeekiamFeed.REFERER_HEADER_VALUE);
                 });
                 services.AddHostedService<DownloadService>();
             }).Build();

@@ -2,5 +2,5 @@ namespace Geekiam.Rss;
 
 public interface IFeedService
 {
-   Task<IEnumerable<FeedLink>> Get(string url, CancellationToken cancellationToken);
+   Task<IEnumerable<Feed>> Get(string url, CancellationToken cancellationToken);
 }

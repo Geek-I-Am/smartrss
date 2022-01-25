@@ -34,7 +34,7 @@ public enum FeedType
 
 
     /// <summary>
-    /// Rss feed - is used for <see cref="FeedLink"/> type
+    /// Rss feed - is used for <see cref="Feed"/> type
     /// </summary>
     Rss,
 

@@ -19,9 +19,9 @@ public class FeedServiceTests
 
     [Theory]
     [MemberData(nameof(LinkData))]
-    public void ShouldParseLink2(string value1, FeedLink expected)
+    public void Should_Parse_Link(string link, Feed expected)
     {
-        var result = _classUnderTest.ExtractLink(value1);
+        var result = _classUnderTest.ExtractLink(link);
 
         result.ShouldBeEquivalentTo(expected);
     }
@@ -32,12 +32,17 @@ public class FeedServiceTests
             new object[]
             {
                 "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"Microsoft Bot Framework Blog\" href=\"http://blog.botframework.com/feed.xml\">",
-                new FeedLink("Microsoft Bot Framework Blog", "http://blog.botframework.com/feed.xml", FeedType.Rss)
+                new Feed("Microsoft Bot Framework Blog", "http://blog.botframework.com/feed.xml", FeedType.Rss)
             },
             new object[]
             {
                 "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"Gary Woodfine &raquo; Feed\" href=\"https://garywoodfine.com/feed/\" />",
-                new FeedLink("Gary Woodfine &raquo; Feed", "https://garywoodfine.com/feed/", FeedType.Rss)
+                new Feed("Gary Woodfine &raquo; Feed", "https://garywoodfine.com/feed/", FeedType.Rss)
+            },
+            new object[]
+            {
+                "<link rel=\"alternate\" type=\"application/atom+xml\" title=\"https://www.heise.de/newsticker/heise-atom.xml\" href=\"https://www.heise.de/newsticker/heise-atom.xml\" />",
+                new Feed("https://www.heise.de/newsticker/heise-atom.xml", "https://www.heise.de/newsticker/heise-atom.xml", FeedType.Atom)
             },
         };
 }

@@ -13,7 +13,8 @@ public class DownloadService : IHostedService
     }
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _service.Get("https://garywoodfine.com", default);
+        var feeds = await _service.Get("https://cryptobriefing.com/", default);
+        feeds.ToList().ForEach(feed => Console.Write($"{feed.Title}  {feed.Type} {feed.Url}\n"));
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
